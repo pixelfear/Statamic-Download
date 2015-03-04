@@ -7,10 +7,12 @@ class Plugin_download extends Plugin
 		$file = $this->fetchParam(array('file', 'filename', 'url'), null, null, false, false);
 		$as   = $this->fetchParam('as', null, null, false, false);
 
-		$url  = '/TRIGGER/download/download?file='.$file;
+		$url  = URL::prependSiteRoot('/TRIGGER/download/download?file='.$file);
+		
 		if ($as) {
 			$url .= '&as='.$as;
 		}
+		
 		return $url;
 	}
 
