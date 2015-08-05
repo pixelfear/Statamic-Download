@@ -4,10 +4,16 @@ class Hooks_download extends Hooks
 
 	public function download__download()
 	{
-		$file     = Request::get('file');
-		$filename = Path::fromAsset($file);
-		$as       = Request::get('as', $file);
+		$file      = Request::get('file');
+		$filename  = Path::fromAsset($file);
+		$as        = Request::get('as', $file);
+		$logged_in = Request::get('logged_in', false);
 
+		// if the user has to be logged in, see if they are
+		if ($logged_in && !Auth::isLoggedIn()) {
+			die('Must be logged in');
+		}
+		
 		if (!$this->download($filename, $as)) {
 			die('File doesn\'t exist');
 		}
