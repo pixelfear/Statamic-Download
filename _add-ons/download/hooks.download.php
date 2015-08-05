@@ -7,10 +7,26 @@ class Hooks_download extends Hooks
 		$file      = Request::get('file');
 		$filename  = Path::fromAsset($file);
 		$as        = Request::get('as', $file);
-		$logged_in = Request::get('logged_in', true);
-
+		$logged_in = filter_var(Request::get('logged_in', true), FILTER_VALIDATE_BOOLEAN);
+		$override  = Request::get('override');
+		
+		if (!$logged_in) {
+			// first make sure there's an override in the config
+			$override_config = $this->fetchConfig('override');
+			if (!$override_config) {
+				die('No override key configured');
+			}
+			
+			// now see if there's an override param
+			if (!$override) {
+				die('No override param');
+			}
+			
+			if ($override_config != $override) {
+				die("Override key & param don't match");
+			}
+		} elseif (!Auth::isLoggedIn()) {
 		// if the user has to be logged in, see if they are
-		if ($logged_in && !Auth::isLoggedIn()) {
 			die('Must be logged in');
 		}
 		
