@@ -7,7 +7,7 @@ class Hooks_download extends Hooks
 		$file      = Request::get('file');
 		$filename  = Path::fromAsset($file);
 		$as        = Request::get('as', $file);
-		$logged_in = Request::get('logged_in', false);
+		$logged_in = Request::get('logged_in', true);
 
 		// if the user has to be logged in, see if they are
 		if ($logged_in && !Auth::isLoggedIn()) {
@@ -21,10 +21,11 @@ class Hooks_download extends Hooks
 
 	private function download($file, $as)
 	{
-		if (!File::exists($file)) {
+		
+		if (!File::exists($file) || is_dir($file)) {
 			return false;
 		}
-
+		
 		header('Content-Description: File Transfer');
 		header('Content-Type: application/octet-stream');
 		header('Content-Disposition: attachment; filename='. basename($as));
